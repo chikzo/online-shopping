@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Link, Switch, Route, BrowserRouter as Router } from 'react-router-dom';
-import { db } from '../Firebase';
+import { Link, Switch, Route, BrowserRouter as Router, useHistory } from 'react-router-dom';
+import {db, auth } from '../Firebase';
 import Button from '@material-ui/core/Button';
+
 
 
 const Shop = () => {
 
     const [products, setProducts] = useState([])
+    let history = useHistory();
+    let user = auth.currentUser
+
     const fetchProducts = async () => {
 
         db.collection('Products').onSnapshot((snapshot) => {
@@ -29,13 +33,34 @@ const Shop = () => {
 
     }, []);
 
-    
+    const addToCart = async (product) => {
+
+        try {
+
+            if(user){
+
+                db.collection("cart").add({
+                    uid: user.uid,
+                    product
+                }).then(alert("Item Added To Cart")).catch((error) => {
+
+                    console.log(error.message);
+                })
+
+            }
+            else{
+
+                alert("Please Login")
+            }
+
+        } catch (error) {
+            console.log(error.message);
+        }
+
+    }
 
     return (
-
-        
-
-        
+                
        <Router>
 
 
@@ -62,6 +87,8 @@ const Shop = () => {
                         <Link >  
 
                         <Button 
+
+                            onClick={() => addToCart(product)}
                             
                             style={{ backgroundColor: 'black', color: '#FFFFFF' }}>
 

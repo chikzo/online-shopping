@@ -4,6 +4,10 @@ import Container from "@material-ui/core/Container";
 import TextField from "@material-ui/core/TextField";
 import { useForm } from "react-hook-form";
 import { db, auth } from "../Firebase";
+import { Link } from "@material-ui/core";
+import { Switch } from "react-router-dom";
+import SignIn from "./SignIn";
+import { useHistory } from "react-router-dom";
 
 const SignUp = () => {
     const {
@@ -11,6 +15,7 @@ const SignUp = () => {
         handleSubmit,
         formState: { errors }} = useForm();
 
+    let history = useHistory();
     
     const onSubmit = async (data) => {
 
@@ -19,9 +24,18 @@ const SignUp = () => {
         
         try{
             const res = await auth.createUserWithEmailAndPassword(email , password).then(
+                
                 alert("Thank you for registering")
             )
-
+            
+            const user = res.user
+            db.collection('users').doc(user.uid).set({
+                uid: user.uid,
+                name,
+                email,
+                contact
+            }).then(console.log("Profile Set!!"))
+                
         }catch(error){
                 console.error(error);
                 alert(error.message)
@@ -29,7 +43,14 @@ const SignUp = () => {
 
     };
 
+    function signIn(){
+
+        history.push("/signIn")
+    }
+
     return (
+
+        
         <Container maxWidth="sm">
             <div>
                 <h1>SignUp</h1>
@@ -78,8 +99,12 @@ const SignUp = () => {
 
                     <Button type="submit"
                         style={{ backgroundColor: "black", color: "#FFFFFF" }}>
-                        Add to Cart
+                        Sign Up
                     </Button>
+                    
+                    <Link href="signIn" onClick={()=> signIn}> Have An Account? Login</Link>
+
+                      
                 </form>
             </div>
         </Container>

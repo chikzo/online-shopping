@@ -3,8 +3,20 @@ import { Link, Switch, Route, BrowserRouter as Router } from 'react-router-dom';
 import Cart from './Cart';
 import Shop from './Shop';
 import SignUp from './SignUp';
+import SignIn from './SignIn';
+import { Button } from '@material-ui/core';
+import { auth } from '../Firebase';
 
 const NavBar = () => {
+
+    function logout(){
+
+        auth.signOut().then(
+
+            alert("Signed Out")
+        )
+    }
+
     return (
 
         <Router>
@@ -14,7 +26,10 @@ const NavBar = () => {
                     <ul className="menu-nav">
                         <Link className="link-nav" to="/">Home</Link>
                         <Link className="link-nav" to="/cart">Cart</Link>
-                        <Link className="link-nav" to="/signUp">SignUp</Link>
+                        <Link className="link-nav" to="/signIn">Login</Link>
+                        <Button onClick={() => logout()}>
+                            Logout
+                        </Button>
                     </ul>
                 </nav>
             </header>
@@ -30,6 +45,10 @@ const NavBar = () => {
 
                 <Route  path="/signUp">
                      <SignUp></SignUp>
+                </Route>
+
+                <Route  path="/signIn">
+                     <SignIn></SignIn>
                 </Route>
             </Switch>
 
